@@ -1,0 +1,26 @@
+{
+  "name": "votebackend",
+  "version": "1.0.0",
+  "description": "Campus Online Voting System Backend API",
+  "main": "server.js",
+  "scripts": {
+    "test": "node --check server.js && node --check Controllers/authController.js && node --check Controllers/electionController.js && node --check Controllers/candidateController.js && node --check Controllers/voteController.js",
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.9.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
