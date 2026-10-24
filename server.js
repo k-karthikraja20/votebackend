@@ -18,17 +18,31 @@ const app = express();
 // Middleware
 app.use(express.json());
 
-const clientUrl = process.env.CLIENT_URL;
-let corsOptions = {};
-if (!clientUrl || clientUrl === "*") {
-  corsOptions = { origin: "*" };
-} else if (clientUrl.includes(",")) {
-  const allowed = clientUrl.split(",").map((s) => s.trim());
-  corsOptions = { origin: allowed, credentials: true };
-} else {
-  corsOptions = { origin: clientUrl, credentials: true };
-}
-app.use(require("cors")(corsOptions));
+// CORS Configuration
+const allowedOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(",").map((s) => s.trim())
+  : [];
+
+const isOriginAllowed = (origin) => {
+  if (!origin) return true;
+  if (allowedOrigins.includes("*") || allowedOrigins.includes(origin)) return true;
+  if (/^http:\/\/localhost(:\d+)?$/.test(origin)) return true;
+  if (/^https:\/\/.*\.vercel\.app$/.test(origin)) return true;
+  if (/^https:\/\/.*\.tmp\.now$/.test(origin)) return true;
+  return false;
+};
+
+app.use(
+  require("cors")({
+    origin: (origin, callback) => {
+      if (isOriginAllowed(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
+    credentials: true,
+  })
+);
 
 // Root route
 app.get("/", (req, res) => {
